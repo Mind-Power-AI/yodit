@@ -18,6 +18,20 @@ COPY . .
 
 ENV DJANGO_SETTINGS_MODULE=myvoice.settings
 ENV PYTHONUNBUFFERED=1
+FROM ubuntu:20.04
+
+# Install Python 3 and pip
+RUN apt-get update && apt-get install -y python3 python3-pip && \
+    ln -s /usr/bin/python3 /usr/bin/python
+
+# Set up your application
+WORKDIR /app
+COPY . /app
+RUN pip install -r requirements.txt
+
+# Use python3 or the symlinked python
+CMD ["python", "python3.py"]
+
 
 EXPOSE 8000
 
