@@ -212,5 +212,5 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy fo
 USE_X_FORWARDED_HOST = True  # Trust proxy headers for request host
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Indicate SSL via proxy headers
 
-CSRF_TRUSTED_ORIGINS = ['https://postgres-production-a225.up.railway.app']
+CSRF_TRUSTED_ORIGINS = 'https://postgres-production-a225.up.railway.app',
 
