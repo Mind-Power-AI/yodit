@@ -11,9 +11,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y docker-ce-cli && rm -rf /var/lib/apt/lists/*
 
 
-    ca-certificates \
-    gnupg \
-    lsb-release
 
 apt-get install -y docker-ce-cli docker-ce containerd.io
 
