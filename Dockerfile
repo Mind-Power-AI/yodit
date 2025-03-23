@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 RUN apt-get update && apt-get install -y docker-ce-cli && rm -rf /var/lib/apt/lists/*
-docker run --privileged -v /var/run/docker.sock:/var/run/docker.sock -it my-image bash
+
 
 # Copy requirements file and install dependencies
 COPY requirements.txt .
