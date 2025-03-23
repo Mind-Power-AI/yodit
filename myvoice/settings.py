@@ -141,6 +141,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Where collectstatic copies files
 
@@ -182,11 +183,13 @@ CACHES = {
     }
 }
 
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_NAME = "sessionid"
 SESSION_COOKIE_DOMAIN = ".pythonanywhere.com/user/videofeed/myvoice/"  # Corrected domain
 SESSION_COOKIE_SECURE = True # Only send the cookie over HTTPS
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 # Django CORS settings
 CORS_ORIGIN_WHITELIST = ['https://node-app.www.pythonanywhere.com/user/videofeed/myvoice/'],
