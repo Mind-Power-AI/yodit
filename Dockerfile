@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y docker-ce-cli && rm -rf /var/lib/apt/li
 
 
 
-apt-get install -y docker-ce-cli docker-ce containerd.io
+apt-get install -y docker-ce-cli docker-ce containerd.io*
 
 
 # Copy requirements file and install dependencies
