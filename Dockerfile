@@ -29,5 +29,4 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
 
-# Run database migrations, collect static files, and start the server
 CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn myvoice.wsgi:application --bind 0.0.0.0:8000"]
