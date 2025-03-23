@@ -11,10 +11,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y docker-ce-cli && rm -rf /var/lib/apt/lists/*
 
 
-
-apt-get install -y docker-ce-cli docker-ce containerd.io*
-
-
 # Copy requirements file and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
