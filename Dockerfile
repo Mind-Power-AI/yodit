@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 RUN apt-get update && apt-get install -y docker-ce-cli && rm -rf /var/lib/apt/lists/*
-apt-get update
+
 apt-get install -y \
     ca-certificates \
     gnupg \
