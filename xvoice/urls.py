@@ -5,12 +5,16 @@ from .views import register
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
+from django.http import HttpResponse
+
+def healthcheck(request):
+    return HttpResponse("OK")
 
 urlpatterns = [
     # Redirect the root URL to the login page
     path('', RedirectView.as_view(url='login/'), name='root_redirect'),
     # path('messaging/', views.messaging_view, name='messaging'),
-
+    path('', healthcheck),
     path('login/', lambda request: redirect('/accounts/login/')),  # Redirect /login to /accounts/login/
     path('accounts/login/', CustomLoginView.as_view(), name='login'),  # Add this line
     path('accounts/register/', views.register, name='register'),
