@@ -15,9 +15,9 @@ SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf
 # SECURITY WARNING: don't run with debug turned on in production!
 # Dynamically set ALLOWED_HOSTS based on the environment
 if os.environ.get('DEBUG', 'False') == 'False':  # For local development
-    ALLOWED_HOSTS = 'localhost', '127.0.0.1',
+    ALLOWED_HOSTS = 'localhost', '127.0.0.1'
 else:  # For production
-    ALLOWED_HOSTS = '*',
+    ALLOWED_HOSTS = '*'
 
 
 
