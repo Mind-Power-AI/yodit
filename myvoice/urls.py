@@ -15,6 +15,7 @@ urlpatterns = [
     path('query_search/', include('query_search.urls')),
     path('login/', lambda request: redirect('/accounts/login/')),  # Redirect /login to /accounts/login/
     path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    path('accounts/register/', views.register, name='register'),
     path('social_app/', include('social_app.urls', namespace='social_app')),
     path('', include('xvoice.urls')),  # Include xvoice app URLs
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
