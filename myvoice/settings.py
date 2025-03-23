@@ -168,7 +168,6 @@ CACHES = {
     }
 }
 
-}
 
 # settings.py
 CACHES = {
