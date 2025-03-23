@@ -77,13 +77,14 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', 'railway'),
-        'USER': os.environ.get('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB'),
-        'HOST': os.environ.get('DATABASE_HOST', 'postgres.railway.internal'),
-        'PORT': os.environ.get('DATABASE_PORT', '5432'),
+        'NAME': os.environ.get('PGDATABASE'),
+        'USER': os.environ.get('PGUSER'),
+        'PASSWORD': os.environ.get('PGPASSWORD'),
+        'HOST': os.environ.get('PGHOST'),
+        'PORT': os.environ.get('PGPORT'),
     }
 }
+
 
 
 
@@ -159,13 +160,14 @@ MEDIA_URL = '/media/'
 # AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
 
 ASGI_APPLICATION = 'myvoice.asgi.application'
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": ('127.0.0.1', 6379),
-        },
-    },
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_URL', 'redis://your-redis-service-url:6379/1'),
+    }
+}
+
 }
 
 # settings.py
@@ -208,4 +210,5 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy fo
 USE_X_FORWARDED_HOST = True  # Trust proxy headers for request host
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Indicate SSL via proxy headers
 
-CSRF_TRUSTED_ORIGINS = f"https://{os.environ.get('RAILWAY_STATIC_URL', '')}"
+CSRF_TRUSTED_ORIGINS = ['https://postgres-production-a225.up.railway.app']
+
