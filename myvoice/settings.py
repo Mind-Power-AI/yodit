@@ -13,9 +13,12 @@ SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # os.environ.get('DEBUG', 'False') == 'True'
+# Dynamically set ALLOWED_HOSTS based on the environment
+if os.environ.get('DEBUG', 'False') == 'True':  # For local development
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:  # For production
+    ALLOWED_HOSTS = ['postgres-production-a225.up.railway.app']
 
-ALLOWED_HOSTS =  '*',
 
 
 # Application definition
