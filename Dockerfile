@@ -3,8 +3,6 @@ FROM python:3.9-slim-buster
 # Set working directory
 RUN apt-get update && apt-get install -y \
     ca-certificates \
-    curl \
-    gnupg \
     lsb-release \
     && rm -rf /var/lib/apt/lists/*
 # Copy requirements file and install dependencies
@@ -21,7 +19,10 @@ CMD ["python", "app.py"]
 FROM debian:buster
 
 # Install necessary packages for adding Docker repository
+RUN apt-get update && apt-get install -y \
 
+    curl \
+    gnupg \
 
 # Add Docker's official GPG key
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
