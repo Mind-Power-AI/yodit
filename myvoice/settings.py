@@ -15,9 +15,9 @@ SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf
 # SECURITY WARNING: don't run with debug turned on in production!
 # Dynamically set ALLOWED_HOSTS based on the environment
 if os.environ.get('DEBUG', 'False') == 'True':  # For local development
-    ALLOWED_HOSTS = 'localhost', '127.0.0.1',
+    ALLOWED_HOSTS = 'localhost', '127.0.0.1'
 else:  # For production
-    ALLOWED_HOSTS = 'postgres-production-a225.up.railway.app',
+    ALLOWED_HOSTS = 'postgres-production-a225.up.railway.app'
 
 
 
@@ -212,5 +212,5 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy fo
 USE_X_FORWARDED_HOST = True  # Trust proxy headers for request host
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Indicate SSL via proxy headers
 
-CSRF_TRUSTED_ORIGINS = 'https://postgres-production-a225.up.railway.app',
+CSRF_TRUSTED_ORIGINS = 'https://postgres-production-a225.up.railway.app'
 
