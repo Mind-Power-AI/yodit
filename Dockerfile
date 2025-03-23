@@ -15,6 +15,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get update && \
     apt-get install -y docker-ce-cli && \
     rm -rf /var/lib/apt/lists/*
+FROM python:3.9-slim-buster
+
+# Install necessary tools and utilities
+RUN apt-get update && apt-get install -y \
+    procps \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+CMD ["python", "app.py"]
 
 
 
