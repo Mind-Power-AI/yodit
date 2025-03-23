@@ -1,6 +1,3 @@
-
-
-
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Login{% endblock %}
@@ -32,4 +29,7 @@
   <p id="exampleText">This text will change color based on your selection.</p>
 </div>
 {% endblock %}
+{% block content %}{% endblock %}
+{% block scripts%}
 <script src="{% static 'js/app.js' %}"></script>
+{% endblock %}
