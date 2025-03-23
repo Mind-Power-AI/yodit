@@ -3,13 +3,18 @@ FROM python:3.9-slim AS base
 WORKDIR /app
 
 # Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
+COPY requirements.txt .
 COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "app.py"]
 
-COPY requirements.txt .
+
 
 # Upgrade pip and install dependencies
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
