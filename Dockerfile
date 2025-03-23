@@ -1,16 +1,18 @@
 FROM python:3.9-slim-buster
 
-# Set working directory
 RUN apt-get update && apt-get install -y \
-    
-# Copy requirements file and install dependencies
+    ca-certificates \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY . .
 
-# Define entry point for your app
 CMD ["python", "app.py"]
 
 
