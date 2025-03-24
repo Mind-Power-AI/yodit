@@ -13,12 +13,16 @@ SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-ALLOWED_HOSTS = 'postgres-production-81aa.up.railway.app',
+# Dynamically set ALLOWED_HOSTS based on the environment
+if os.environ.get('DEBUG', 'False') == 'False':  # For local development
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1:8000']  # List format
+else:  # For production
+    ALLOWED_HOSTS = ['postgres-production-a225.up.railway.app']  # List format
 
 
 # Application definition
 INSTALLED_APPS = [
+
     'channels',
     'rest_framework',
     'embed_video',
@@ -68,7 +72,7 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = "myvoice.wsgi.application"
-path = '/home/videofeed/myvoice/myvoice/'
+path = 'postgres-production-a225.up.railway.app'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 
 # Databasehttps://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -76,13 +80,15 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', 'railway'),
-        'USER': os.environ.get('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'cSbfGmwcpgeyaOqFWwpbTBuDFHiuJcjC'),
-        'HOST': os.environ.get('DATABASE_HOST', 'postgres.railway.internal'),
-        'PORT': os.environ.get('DATABASE_PORT', '5432'),
+        'NAME': os.environ.get('PGDATABASE'),
+        'USER': os.environ.get('PGUSER'),
+        'PASSWORD': os.environ.get('PGPASSWORD'),
+        'HOST': os.environ.get('PGHOST'),
+        'PORT': os.environ.get('PGPORT'),
+         # 8000
     }
 }
+
 
 
 
@@ -158,14 +164,15 @@ MEDIA_URL = '/media/'
 # AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
 
 ASGI_APPLICATION = 'myvoice.asgi.application'
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
-    },
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get('REDIS_URL', 'redis://your-redis-service-url:6379/1'),
+    }
 }
+
+
 
 # settings.py
 CACHES = {
@@ -197,8 +204,8 @@ SESSION_REDIS = {
     'prefix': 'session',
     'socket_timeout': 1,
     'retry_on_timeout': False
-
-}# Security settings
+}
+# Security settings
 SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filtering
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy for security
@@ -206,3 +213,5 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy fo
 # For reverse proxies (if applicable)
 USE_X_FORWARDED_HOST = True  # Trust proxy headers for request host
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Indicate SSL via proxy headers
+
+CSRF_TRUSTED_ORIGINS = ['https://postgres-production-a225.up.railway.app']
