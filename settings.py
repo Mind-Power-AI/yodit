@@ -77,6 +77,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 
 # Databasehttps://docs.djangoproject.com/en/5.1/ref/settings/#databases
 from decouple import config
+import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -85,8 +86,6 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
-
-import dj_database_url
 
 DATABASES = {
     'default': {
