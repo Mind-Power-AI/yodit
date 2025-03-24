@@ -76,6 +76,12 @@ path = 'postgres-production-a225.up.railway.app'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 
 # Databasehttps://docs.djangoproject.com/en/5.1/ref/settings/#databases
+DATABASE_URL=postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@postgres.railway.internal:5432/railway
+DEBUG=True
+SECRET_KEY="django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf"
+
+
+
 from decouple import config
 import dj_database_url
 
