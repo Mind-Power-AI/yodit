@@ -76,6 +76,17 @@ path = 'postgres-production-a225.up.railway.app'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 
 # Databasehttps://docs.djangoproject.com/en/5.1/ref/settings/#databases
+from decouple import config
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
+
+import dj_database_url
 
 DATABASES = {
     'default': {
@@ -87,11 +98,6 @@ DATABASES = {
         'PORT': os.environ.get('PGPORT'),
          # 8000
     }
-'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),  # Fetch DATABASE_URL from environment variables
-        conn_max_age=600,  # Optional: Set connection pooling lifetime (in seconds)
-        conn_health_checks=True,  # Optional: Enable health checks for persistent connections
-    )
 }
 
 
