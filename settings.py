@@ -151,12 +151,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Directory where collectstatic will gather all static files for production
 
-STATIC_URL = '/static/'
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'  # URL to access static files
 
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Where collectstatic copies files
+# Directory where `collectstatic` will gather all static files for production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Additional directories to search for static files during development
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Place custom static files here
+]
+
+# Enable compression and caching for static files in production
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 
 LOGIN_URL = '/accounts/login/'
 # settings.py
