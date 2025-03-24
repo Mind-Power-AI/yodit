@@ -23,6 +23,10 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from transformers import TFDistilBertForQuestionAnswering, DistilBertTokenizer
 # import tensorflow as tf
+# myvoice/views.py
+
+def health_check(request):
+    return HttpResponse("OK")
 
 # Load pre-trained model and tokenizer
 # model = TFDistilBertForQuestionAnswering.from_pretrained('distilbert-base-uncased-distilled-squad')
