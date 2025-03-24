@@ -14,7 +14,7 @@ DEBUG = config('DEBUG', cast=bool, default=False)
 
 ALLOWED_HOSTS = []
 if not DEBUG:
-    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='your_production_hostname.com')]
+    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='postgres.railway.internal.com')]  # Replace with your actual hostname
 else:
     ALLOWED_HOSTS = ['*']  # Allow all hosts in development
 
@@ -102,19 +102,19 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_NAME = "sessionid"
-SESSION_COOKIE_DOMAIN = None
-SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_DOMAIN = None  #  Remove for local dev. Set in prod with correct railway.
+SESSION_COOKIE_SECURE = not DEBUG  # Should be True in production
 
 # CORS settings
-CORS_ORIGIN_WHITELIST = [config('CORS_ORIGIN', default='http://localhost:3000')]
+CORS_ORIGIN_WHITELIST = [config('CORS_ORIGIN', default='http://localhost:3000')]  # Replace with your actual origin(s)
 CORS_ALLOW_CREDENTIALS = True
 
 # Redis session configuration
 SESSION_REDIS = {
-    'host': config('REDIS_HOST', default='127.0.0.1'),
+    'host': config('REDIS_HOST', default='127.0.0.1'),  # Defaults for local development
     'port': config('REDIS_PORT', cast=int, default=6379),
-    'db': config('REDIS_DB', cast=int, default=1),
-    'password': config('none', default=''),
+    'db': config('REDIS_DB', cast=int, default=0),
+    'password': config('VtYU3CdPHD80MuyK1SQYGbXMCXD1Uh3R', default=''),  # Set to your actual Redis password
     'prefix': 'session',
     'socket_timeout': 1,
     'retry_on_timeout': False,
@@ -127,7 +127,7 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = [config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000')]
+CSRF_TRUSTED_ORIGINS = [config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000')]  # Replace with your actual origin(s)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
