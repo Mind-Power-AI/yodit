@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
-
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -57,8 +56,8 @@ TEMPLATES = [
             'context_processors': [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+                "django.contrib.auth.context_processors.request",
+                "django.contrib.auth.context_processors.messages",
             ],
         },
     },
