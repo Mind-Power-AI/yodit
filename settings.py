@@ -40,6 +40,8 @@ router.Use(gin.Recovery())
 router.GET("/health", func(c *gin.Context) {
     c.Status(200)
 })
+port := os.Getenv("PORT")
+router.Run("0.0.0.0:" + port)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
