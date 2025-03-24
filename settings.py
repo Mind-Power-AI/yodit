@@ -68,7 +68,7 @@ WSGI_APPLICATION = "myvoice.wsgi.application"
 
 # Database configuration
 DATABASES = {
-    'default': dj_database_url.parse(config('postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:5432/${{PGDATABASE}}', default='sqlite:///db.sqlite3'))
+    'default': dj_database_url.parse(config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@interchange.proxy.rlwy.net:28208/railway', default='sqlite:///db.sqlite3'))
 }
 
 # Static files (CSS, JavaScript, Images)
@@ -113,8 +113,8 @@ CORS_ALLOW_CREDENTIALS = True
 SESSION_REDIS = {
     'host': config('REDIS_HOST', default='127.0.0.1'),
     'port': config('REDIS_PORT', cast=int, default=6379),
-    'db': config('REDIS_DB', cast=int, default=1),
-    'password': config('None', default=''),
+    'db': config('None', cast=int, default=1),
+    'password': config('', default=''),
     'prefix': 'session',
     'socket_timeout': 1,
     'retry_on_timeout': False,
