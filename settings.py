@@ -3,21 +3,38 @@ from pathlib import Path
 from decouple import config
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
+import logging
+
+# Initialize logger
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf') #Use decouple here as well, with a reasonable default
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool, default=False)  # Use decouple, and cast to boolean
+DEBUG = config('DEBUG', cast=bool, default=False)  # Set default to False for safety
 
 ALLOWED_HOSTS = []
-if not DEBUG: # production only
-    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='postgres-production-a225.up.railway.app')]
+if not DEBUG:
+    # Production-specific settings
+    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='your_production_hostname.com')]  # Replace with your actual hostname
+    if 'RAILWAY_ENVIRONMENT' in os.environ:
+        # Running on Railway, trust the X-Forwarded-Proto header
+        SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+        USE_X_FORWARDED_HOST = True
+        SECURE_SSL_REDIRECT = True  # Force HTTPS
+        SESSION_COOKIE_SECURE = True  # HTTPS-only cookies
+        CSRF_COOKIE_SECURE = True  # HTTPS-only CSRF token
+        logger.info("Running in Railway environment, security settings enabled.")
+    else:
+        logger.warning("Running in production, but not in Railway. Please ensure security settings are configured manually.")
 else:
-     ALLOWED_HOSTS = ['*']
+    # Development-specific settings
+    ALLOWED_HOSTS = ['*']  # Allow all hosts in development
+    logger.info("Running in development mode. ALLOWED_HOSTS set to '*', security settings relaxed.")
 
 # Application definition
 INSTALLED_APPS = [
@@ -107,7 +124,7 @@ SESSION_REDIS = {
     'host': config('REDIS_HOST', default='127.0.0.1'),  # Use decouple for Redis settings
     'port': config('REDIS_PORT', cast=int, default=6379), #Use decouple
     'db': config('REDIS_DB', cast=int, default=1),   #Use decouple
-    'password':config('VtYU3CdPHD80MuyK1SQYGbXMCXD1Uh3R', default='') ,  # Set password to None if no password is used
+    'password':config('VtYU3CdPHD80MuyK1SQYGbXMCXD1Uh3R, default='') ,  # Set password to None if no password is used
     'prefix': 'session',
     'socket_timeout': 1,
     'retry_on_timeout': False
