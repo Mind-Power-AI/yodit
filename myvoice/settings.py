@@ -15,14 +15,14 @@ SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf
 # SECURITY WARNING: don't run with debug turned on in production!
 # Dynamically set ALLOWED_HOSTS based on the environment
 if os.environ.get('DEBUG', 'False') == 'False':  # For local development
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # List format
 else:  # For production
-    ALLOWED_HOSTS = ['postgres-production-a225.up.railway.app']
+    ALLOWED_HOSTS = ['postgres-production-a225.up.railway.app']  # List format
 
 
 # Application definition
 INSTALLED_APPS = [
-    'myvoice',
+
     'channels',
     'rest_framework',
     'embed_video',
@@ -72,10 +72,20 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = "myvoice.wsgi.application"
-path =  ['postgres-production-a225.up.railway.app']
+path = 'postgres-production-a225.up.railway.app'
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 
 # Databasehttps://docs.djangoproject.com/en/5.1/ref/settings/#databases
+from decouple import config
+import dj_database_url
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 DATABASES = {
     'default': {
@@ -85,6 +95,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('PGPASSWORD'),
         'HOST': os.environ.get('PGHOST'),
         'PORT': os.environ.get('PGPORT'),
+         # 8000
     }
 }
 
@@ -139,14 +150,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Directory where collectstatic will gather all static files for production
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'  # URL to access static files
 
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Where collectstatic copies files
+# Directory where `collectstatic` will gather all static files for production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Additional directories to search for static files during development
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Place custom static files here
+]
+
+# Enable compression and caching for static files in production
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 
 LOGIN_URL = '/accounts/login/'
 # settings.py
@@ -173,6 +190,7 @@ CACHES = {
 }
 
 
+
 # settings.py
 CACHES = {
     "default": {
@@ -184,13 +202,11 @@ CACHES = {
     }
 }
 
-
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_NAME = "sessionid"
 SESSION_COOKIE_DOMAIN = ".pythonanywhere.com/user/videofeed/myvoice/"  # Corrected domain
 SESSION_COOKIE_SECURE = True # Only send the cookie over HTTPS
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 # Django CORS settings
 CORS_ORIGIN_WHITELIST = ['https://node-app.www.pythonanywhere.com/user/videofeed/myvoice/'],
@@ -205,8 +221,8 @@ SESSION_REDIS = {
     'prefix': 'session',
     'socket_timeout': 1,
     'retry_on_timeout': False
-
-}# Security settings
+}
+# Security settings
 SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filtering
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy for security
@@ -216,4 +232,3 @@ USE_X_FORWARDED_HOST = True  # Trust proxy headers for request host
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Indicate SSL via proxy headers
 
 CSRF_TRUSTED_ORIGINS = ['https://postgres-production-a225.up.railway.app']
-
