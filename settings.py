@@ -2,20 +2,21 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
-from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf"
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool, default=True)
+DEBUG = config('DEBUG', cast=bool, default=False)
 
 ALLOWED_HOSTS = []
 if not DEBUG:
-    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='your_production_hostname.com')]  # Replace with your actual hostname
+    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='your_production_hostname.com')]
+else:
+    ALLOWED_HOSTS = ['*']  # Allow all hosts in development
 
 # Application definition
 INSTALLED_APPS = [
@@ -56,8 +57,8 @@ TEMPLATES = [
             'context_processors': [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.request",
-                "django.contrib.auth.context_processors.messages",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -67,7 +68,7 @@ WSGI_APPLICATION = "myvoice.wsgi.application"
 
 # Database configuration
 DATABASES = {
-    'default': dj_database_url.parse(config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@interchange.proxy.rlwy.net:28208/railway', default='sqlite:///db.sqlite3'))
+    'default': dj_database_url.parse(config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@postgres.railway.internal:5432/railway', default='sqlite:///db.sqlite3'))
 }
 
 # Static files (CSS, JavaScript, Images)
@@ -87,40 +88,46 @@ MEDIA_URL = '/media/'
 
 ASGI_APPLICATION = 'myvoice.asgi.application'
 
+# Redis cache configuration
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_NAME = "sessionid"
-SESSION_COOKIE_DOMAIN = None  #  Set this in production if needed.
-SESSION_COOKIE_SECURE = not DEBUG  # only in production, session_cookie_secure should be True
+SESSION_COOKIE_DOMAIN = None
+SESSION_COOKIE_SECURE = not DEBUG
 
-# Django CORS settings.  These should be environment variables in production.
-CORS_ORIGIN_WHITELIST = [config('CORS_ORIGIN', default='http://localhost:3000')]  # and/or whatever your development port is.
+# CORS settings
+CORS_ORIGIN_WHITELIST = [config('CORS_ORIGIN', default='http://localhost:3000')]
 CORS_ALLOW_CREDENTIALS = True
 
+# Redis session configuration
 SESSION_REDIS = {
-    'host': config('REDIS_HOST', default='127.0.0.1'),  # Use decouple for Redis settings
-    'port': config('REDIS_PORT', cast=int, default=6379),  # Use decouple
-    'db': config('REDIS_DB', cast=int, default=1),  # Use decouple
-    'password': config('REDIS_PASSWORD', default=''),  # Set password to None if no password is used
+    'host': config('REDIS_HOST', default='127.0.0.1'),
+    'port': config('REDIS_PORT', cast=int, default=6379),
+    'db': config('REDIS_DB', cast=int, default=1),
+    'password': config('none', default=''),
     'prefix': 'session',
     'socket_timeout': 1,
-    'retry_on_timeout': False
+    'retry_on_timeout': False,
 }
 
+# Security settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = [config('CSRF_ORIGIN', default='http://localhost:8000')]
+CSRF_TRUSTED_ORIGINS = [config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000')]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -136,4 +143,5 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
