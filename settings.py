@@ -124,7 +124,7 @@ SESSION_REDIS = {
     'host': config('REDIS_HOST', default='127.0.0.1'),  # Use decouple for Redis settings
     'port': config('REDIS_PORT', cast=int, default=6379), #Use decouple
     'db': config('REDIS_DB', cast=int, default=1),   #Use decouple
-    'password':config('None, default='') ,  # Set password to None if no password is used
+    'password':config('None, default=') ,  # Set password to None if no password is used
     'prefix': 'session',
     'socket_timeout': 1,
     'retry_on_timeout': False
