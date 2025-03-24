@@ -35,6 +35,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+// Example Gin middleware exclusion
+router.Use(gin.Recovery())
+router.GET("/health", func(c *gin.Context) {
+    c.Status(200)
+})
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
