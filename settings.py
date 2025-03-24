@@ -87,6 +87,11 @@ DATABASES = {
         'PORT': os.environ.get('PGPORT'),
          # 8000
     }
+'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),  # Fetch DATABASE_URL from environment variables
+        conn_max_age=600,  # Optional: Set connection pooling lifetime (in seconds)
+        conn_health_checks=True,  # Optional: Enable health checks for persistent connections
+    )
 }
 
 
