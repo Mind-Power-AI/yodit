@@ -15,7 +15,7 @@ SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf
 # SECURITY WARNING: don't run with debug turned on in production!
 # Dynamically set ALLOWED_HOSTS based on the environment
 if os.environ.get('DEBUG', 'False') == 'False':  # For local development
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # List format
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1:8000']  # List format
 else:  # For production
     ALLOWED_HOSTS = ['postgres-production-a225.up.railway.app']  # List format
 
@@ -81,23 +81,27 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default=config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@postgres.railway.internal:5432/railway'),
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
 
+import environ
+
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env()  # Read .env file
+
+# Database configuration
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE'),
-        'USER': os.environ.get('PGUSER'),
-        'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': os.environ.get('PGHOST'),
-        'PORT': os.environ.get('PGPORT'),
-         # 8000
-    }
+    'default': env.db(
+        'DATABASE_URL',  # Fetch DATABASE_URL from .env or system environment
+        default='sqlite:///db.sqlite3'  # Optional fallback for development
+    )
 }
+
+
 
 
 
@@ -150,6 +154,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Directory where collectstatic will gather all static files for production
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'  # URL to access static files
 
@@ -163,7 +168,6 @@ STATICFILES_DIRS = [
 
 # Enable compression and caching for static files in production
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
 
 LOGIN_URL = '/accounts/login/'
 # settings.py
