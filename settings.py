@@ -1,28 +1,25 @@
 import os
 from pathlib import Path
+from decouple import config
+import dj_database_url
+
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Dynamically set ALLOWED_HOSTS based on the environment
-if os.environ.get('DEBUG', 'False') == 'False':  # For local development
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # List format
-else:  # For production
-    ALLOWED_HOSTS = ['postgres-production-a225.up.railway.app']  # List format
+DEBUG = config('DEBUG', cast=bool, default=True)
 
+ALLOWED_HOSTS = []
+if not DEBUG:
+    ALLOWED_HOSTS = [config('ALLOWED_HOST', default='your_production_hostname.com')]  # Replace with your actual hostname
 
 # Application definition
 INSTALLED_APPS = [
-
     'channels',
     'rest_framework',
     'embed_video',
@@ -51,65 +48,80 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "myvoice.urls"
 
-
-# ✅ Correct: TEMPLATES is a list of dicts
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Templates outside apps
-        'APP_DIRS': True,  # Allow Django to search app-specific templates
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-
             ],
         },
     },
 ]
 
-
 WSGI_APPLICATION = "myvoice.wsgi.application"
-path = 'postgres-production-a225.up.railway.app'
-os.environ['DJANGO_SETTINGS_MODULE'] = 'myvoice.settings'
 
-# Databasehttps://docs.djangoproject.com/en/5.1/ref/settings/#databases
-DATABASE_URL=postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@postgres.railway.internal:5432/railway
-DEBUG=True
-SECRET_KEY="django-insecure-y0&g8dvlox@d92kfqfl+y%ad2ct)go+*+$)a7h7c+gsqpq@^bf"
-
-
-
-from decouple import config
-import dj_database_url
-
+# Database configuration
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': dj_database_url.parse(config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@interchange.proxy.rlwy.net:28208/railway', default='sqlite:///db.sqlite3'))
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE'),
-        'USER': os.environ.get('PGUSER'),
-        'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': os.environ.get('PGHOST'),
-        'PORT': os.environ.get('PGPORT'),
-         # 8000
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+ASGI_APPLICATION = 'myvoice.asgi.application'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
     }
 }
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+SESSION_COOKIE_NAME = "sessionid"
+SESSION_COOKIE_DOMAIN = None  #  Set this in production if needed.
+SESSION_COOKIE_SECURE = not DEBUG  # only in production, session_cookie_secure should be True
 
+# Django CORS settings.  These should be environment variables in production.
+CORS_ORIGIN_WHITELIST = [config('CORS_ORIGIN', default='http://localhost:3000')]  # and/or whatever your development port is.
+CORS_ALLOW_CREDENTIALS = True
 
+SESSION_REDIS = {
+    'host': config('REDIS_HOST', default='127.0.0.1'),  # Use decouple for Redis settings
+    'port': config('REDIS_PORT', cast=int, default=6379),  # Use decouple
+    'db': config('REDIS_DB', cast=int, default=1),  # Use decouple
+    'password': config('REDIS_PASSWORD', default=''),  # Set password to None if no password is used
+    'prefix': 'session',
+    'socket_timeout': 1,
+    'retry_on_timeout': False
+}
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = [config('CSRF_ORIGIN', default='http://localhost:8000')]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,117 +137,4 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
-# AUTH_USER_MODEL = 'social_app.CustomUser'
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-# settings.py
-
-# URL prefix for serving static files
-
-
-# Directory where collectstatic will gather all static files for production
-
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'  # URL to access static files
-
-# Directory where `collectstatic` will gather all static files for production
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Additional directories to search for static files during development
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Place custom static files here
-]
-
-# Enable compression and caching for static files in production
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
-
-LOGIN_URL = '/accounts/login/'
-# settings.py
-LOGIN_REDIRECT_URL = '/'
-
-LOGOUT_REDIRECT_URL = '/'
-#
-# myproject/settings.py
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# AWS_ACCESS_KEY_ID = 'your-access-key'
-# AWS_SECRET_ACCESS_KEY = 'your-secret-key'
-# AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
-
-ASGI_APPLICATION = 'myvoice.asgi.application'
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_URL', 'redis://your-redis-service-url:6379/1'),
-    }
-}
-
-
-
-# settings.py
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
-SESSION_COOKIE_NAME = "sessionid"
-SESSION_COOKIE_DOMAIN = ".pythonanywhere.com/user/videofeed/myvoice/"  # Corrected domain
-SESSION_COOKIE_SECURE = True # Only send the cookie over HTTPS
-
-# Django CORS settings
-CORS_ORIGIN_WHITELIST = ['https://node-app.www.pythonanywhere.com/user/videofeed/myvoice/'],
-CORS_ALLOW_CREDENTIALS = True
-
-# Advanced Redis configuration
-SESSION_REDIS = {
-    'host': '127.0.0.1',
-    'port': 6379,
-    'db': 1,
-    'password':'VtYU3CdPHD80MuyK1SQYGbXMCXD1Uh3R' ,  # Set password to None if no password is used
-    'prefix': 'session',
-    'socket_timeout': 1,
-    'retry_on_timeout': False
-}
-# Security settings
-SECURE_BROWSER_XSS_FILTER = True  # Enable browser XSS filtering
-SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
-SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Referrer policy for security
-
-# For reverse proxies (if applicable)
-USE_X_FORWARDED_HOST = True  # Trust proxy headers for request host
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Indicate SSL via proxy headers
-
-CSRF_TRUSTED_ORIGINS = ['https://postgres-production-a225.up.railway.app']
