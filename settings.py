@@ -69,7 +69,7 @@ WSGI_APPLICATION = "myvoice.wsgi.application"
 
 # Database configuration
 DATABASES = {
-    'default': dj_database_url.parse(config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@interchange.proxy.rlwy.net:28208/railway', default='sqlite:///db.sqlite3')) # or whatever is appropriate for dev
+    'default': dj_database_url.parse(config('postgresql://postgres:OjCvFOhChzaPhZzgyJuQEKtwNFudhZyB@postgres.railway.internal:5432/railway', default='sqlite:///db.sqlite3')) # or whatever is appropriate for dev
 }
 
 # Static files (CSS, JavaScript, Images)
